@@ -1,79 +1,54 @@
+<!--Сделать форму-анкету с отправкой данных на сервер (можно использовать один файл с формой и пхп скриптом).
+ В форме запросить данные пользователя - номер телефона, адрес, дата рождения, email, пол как radio. Произвести валидацию всех полей формы на клиенте (если возможно html, кто может js) и на сервере усилиями php.-->
 <?php
-//---------------------
-//---Исходный массив: [1, 22, 333, 4444, 22, 5555, 1]
-//---Удалите из этой строки все подстроки, в которых количество символов больше трех.
+include("funtions.php");
+?>
+<!DOCTYPE html>
+<html lang="en">
 
-$arr = [1, 22, 333, 4444, 22, 5555, 1];
-$newArr = [];
-foreach ($arr as $value) {
-    if (iconv_strlen($value) <= 3)
-    /*использовала именно эта функция на тот случай, если в массиве вдруг будет лежат не число, а слово на кирилице(mb_strlen почему-то выдает ошибку в PHP-8, если использовать версию более раннюю, то работает норм*/ {
-        $newArr[] = $value;
-    }
-}
-echo "<pre>";
-var_dump($newArr);
-echo "</pre><br><hr>";
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
 
-//----------------------
-/**
- * Дана дата в следующем формате:
-'2025-12-31'
-Преобразуйте эту дату в следующий массив:
-[
-'year'  => '2025',
-'month' => '12',
-'day'   => '31’
-]
+<body>
 
- */
+    <form method="POST" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" autocomplete="on">
+        <fieldset>
+            <legend>Аккаунт пользователя</legend>
+            <input type="text" name="lastname" pattern="[A-zА-я]{3-12}" placeholder="Введите свое имя" autofocus required>
+            <span style="color: red;">* <?php echo $lastnameErr;?></span><br>
+            <input type="text" name="firstname" pattern="[A-zА-я]{3-12}" placeholder="Введите свою фамилию" required>
+            <span style="color: red;">* <?php echo $firstnameErr;?></span><br>
+            <input type="text" name="country" pattern="[A-zА-я]{3-12}" placeholder="Введите страну" required>
+            <span style="color: red;">* <?php echo $countryErr;?></span><br>
+            <input type="text" name="city" pattern="[A-zА-я]{3-12}" placeholder="Введите город" required>
+            <span style="color: red;">* <?php echo $cityErr;?></span><br>
+            <input type="text" name="street" pattern="[A-zА-я]{3-12}" placeholder="Введите улицу" required>
+            <span style="color: red;">* <?php echo $streetErr;?></span><br>
+            <input type="text" name="adress" pattern="([A-z])+([0-9\-_\+\.])*([A-z0-9\-_\+\.])*@([A-z])+([0-9\-_\+\.])*([A-z0-9\-_\+\.])*[\.]([A-zА-я])+" placeholder="Введите адрес эл почты" required>
+            <span style="color: red;">* <?php echo $adressErr; ?></span><br>
+            <input type="phone" name="phone" placeholder="Введите номер телефона" pattern="^\+?[375][-\(]?\d{3}\)?-?\d{3}-?\d{2}-?\d{2}$" required><span style="color: red;">* <?php echo $phoneErr; ?></span><br>
+            <label for="gender">Введите вашу половую принадлежность: </label><br>
+            <select name="gender" id="gender" required>
+                <option value=""></option>
+                <option value="женский">женский</option>
+                <option value="мужской">мужской</option>
+                <option value="другой">еще не определился</option>
+            </select><span style="color: red;">* <?php echo $genderErr; ?></span><br>
+            <input type="password" name="pass" placeholder="Пароль" maxlength="12" required><span style="color: red;">* <?php echo $passErr; ?></span><br>
+            <label for="date">Дата рождения: </label><br>
+            <input type="date" name="bday" max="2020-12-31" placeholder="Введите вашу дату рождения" required><span style="color: red;">* <?php echo $bdayErr; ?></span>
+        </fieldset>
+        <input type="submit" name="submit" value="Отправить данные на сервер">
+        <input type="reset">
+    </form>
+    <pre>
+ <?php
+ adr($dataUser,$homAdr);
+ var_dump($dataUser);?> 
+    </pre>
+</body>
 
-$str = '2025-12-31';
-$arr2 = explode('-', $str);
-
-echo "<pre>";
-var_dump($arr2);
-echo "</pre><br><hr>";
-
-//-------------------
-/**
- * Сделайте функцию, которая параметром будет принимать текст со словами, а возвращать текст, в котором эти слова будут отсортированы в алфавитном порядке
- */
-$str = 'папа любит булочки с маком';
-
-function SortStr(string $str): string
-{
-    $arr = [];
-    $arr = explode(' ', $str);
-    sort($arr);
-    $str = implode(' ', $arr);
-    return $str;
-}
-$str = SortStr($str);
-echo $str . "<br><hr>";
-
-//---------------------
-/**
- * Сделайте функцию, которая параметром будет принимать массив и элемент и возвращать следующий за ним элемент. Пример:
-$arr = [1, 2, 3, 4, 5];
-func($arr, 1); // 2
-func($arr, 4); // 5
-func($arr, 5); // 1
- */
-$arr = [1, 2, 3, "4", 5];
-
-function func(array $arr, int|string $value): int|string
-{
-    for ($i = 0; $i < count($arr); $i++) {
-        $current = $arr[$i];
-        if ($current == $value) {
-            if ($i == (count($arr) - 1)) {
-                return $arr[0];
-            }
-            return $arr[$i + 1];
-        }
-    }
-}
-$value = func($arr, 5);
-var_dump($value);
-echo "<br><hr>";
+</html>
