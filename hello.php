@@ -1,6 +1,5 @@
 <?php
-	session_start(); 
-	if (!empty($_SESSION['username'])) {
-		echo $_SESSION['username']; 
+	if (!empty($_COOKIE['username'])) {
+		echo $_COOKIE['username']; 
 	}
 ?>

@@ -1,7 +1,7 @@
 <?php
+
 	if (!empty($_REQUEST['username'])) {
-		session_start(); //стартуем сессию
-		$_SESSION['username'] = $_REQUEST['username']; 
+		setcookie('username', $_REQUEST['username'], time()+3600, '/');
 	}
 ?>
 
@@ -9,4 +9,5 @@
 	<input type="text" name="username">
 	<input type="submit">
 </form>
+
 
