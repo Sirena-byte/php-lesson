@@ -1,81 +1,103 @@
 <?php
-session_start();
-require("action_form.php"); ?>
+require("action.php");
+?>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>lesson 13</title>
 </head>
 
 <body>
-    Задание №1<br>
-    Создать форму для регистрации (учета) пользователей: форма может содержать любые данные, данные необходимо записывать в файл<br>
-    <form action="#" method="post">
-        Имя: <input type="text" name="firstname">
-        Фамилия: <input type="text" name="lastname">
-        <input type="submit" name="send_name">
-    </form>
-    <?php
-    if (!empty($_POST["send_name"])) {
-        $file = fopen("DB.txt", "r") or die("Невозможно открыть файл");
-        while (!feof($file)) {
-            echo fgets($file) . "<br>";
-        }
-        fclose($file);
-    }
-    ?>
-    <hr>
-    Задание №2<br>
-    Создать файл, заполнить его случайными числами от 0 до 10, написать функцию которая будет принимать пользовательское значение с формы, посчитать сколько раз встречается введенное пользователем число в файле<br>
-    Введите искомое число:
+    Задание №1: Вычислить факториал числа, используем классы
     <form action="#" method="post">
         <input type="number" name="num">
         <input type="submit" name="send_num">
     </form>
-
     <?php
     if (!empty($_POST["send_num"])) {
-        echo "Файл содержит числа: " . print_file('rand.txt') . "<br>";
-        echo  "Введенное вами число " . $num . " встречается в файле " . count_f($num) . " раз.";
+        $fac = new Factorial($_POST["num"]);
+        echo "Факториал числа " . $fac->get_num() . " равен " . $fac->get_factorial($_POST['num']);
+    } else {
     }
-    ?>
-
-
-    <hr>
-    Задание №3: Получить структуру текущего каталога, посчитать количество папок и файлов в данном каталоге<br>
-    <?= "Структура текущего каталога: " . $_SERVER['DOCUMENT_ROOT'] . "<br>" ?>
-    Дирректория содержит <br><?= count_file($_SERVER['DOCUMENT_ROOT']) ?> файлов<br><?= count_dir($_SERVER['DOCUMENT_ROOT']) ?> папок.<br>
-    <hr>
-    Задание №4: Написать функцию транслит используя строку ввода. Пользователь вводит текст на русском языке и при нажатии на кнопку отправить, ему показывается строка - транслит (например, привет - privet). Правила транслита не важны.
-    <form action="#" method="post">
-        <input type="text" name="str">
-        <input type="submit" name="send_str">
-    </form>
-    <?php if (!empty($_POST['send_str'])) {
-        $str = $_POST["str"];
-        echo "Полученная строка: " . translit($str);
-    } ?>
-    <hr>
-    Задание №5: Используя 1 задание написать авторизацию с использованием сессий: создать сессию, в неё записать логин пользователя и всё содержание сессии (id, логин и остальное по умолчанию) и при входе на страницу (или создать другую) должно подтягивать пользователя из авторизации и выдавать ему приветствие.
-    <form action="#" method="post">
-        Логин: <input type="text" name="login">
-        Пароль: <input type="password" name="pass">
-        <input type="submit" name="send_autorization">
+    ?><br>
+    <hr><br>
+    Задание №2: Создать класс Калькулятор при помощи классов и методов (можно использовать запись файлов для хранения истории)
+    <form action="#" method="POST">
+        <input type="text" name="x1">
+        <select name="operation" id="">
+            <option value="+">+</option>
+            <option value="-">-</option>
+            <option value="*">*</option>
+            <option value="/">/</option>
+        </select>
+        <input type="text" name="x2">
+        <input type="submit" name="send_calc">
     </form>
     <?php
-    if (!empty($_POST["send_autorization"])) {
-        if (!empty($_SESSION['user_id']))
-            die('Вы уже авторизованы');
-        $user = ($_POST['login']);
-        if (!$user)
-            die('Пользователь не найден');
-        echo "Привет,  $user <br> ";
+
+    if (!empty($_POST['send_calc'])) {
+        if ((!empty($_POST['x1'])) && (!empty($_POST['x2']))) {
+            $calc = new Calc;
+            echo $calc->__get("x1") . " " . $calc->__get("operation") . " " . $calc->__get("x2") . " = " . $calc->result_data();
+        } else {
+            echo "<span style='color:red;'> Введены неккоректные данные. Введите корректные данные и попробуйте еще раз!</span>";
+        }
+    } else {
+        echo "Введите данные и нажмите кнопку 'Отправить'";
     }
-    session_destroy();
     ?>
+    <!-- <span style="color: red;">
+        <? //$calc->__get("error"); 
+        ?>
+    </span> -->
+    <br>
+    <hr><br>
+    Задание №3: Используя задание №5 из прошлого дз выполните всё тоже самое (форма регистрации/авторизации и запись в файл) но с использованием классов (создайте класс User или Registration, методы для валидации).
+
+    <form action="#" method="POST">
+        <input type="text" name="login">
+        <input type="password" name="pass">
+        <input type="submit" name="send_reg">
+    </form>
+    <?php
+    if (!empty($_POST['send_reg'])) {
+        $user = new User($_POST['login'], $_POST['pass']);
+    }
+    ?>
+    <br>
+    <hr><br>
+    Задание №4: Создать родительский класс Фигура и дочерний класс Круг (можно ещё несколько дочерних)
+    <br>
+    <form action="#" method="get">
+        Выберите фигуру для нахождения ее площади:<br>
+        <select name="shape" id="">
+            <option value="none">не выбрано</option>
+            <option value="circle">круг</option>
+            <option value="square">квадрат</option>
+        </select>
+            <br><input type='number' name='x'>
+            <input type='submit' name='send_num'><br>
+        <?php
+        if (!empty($_GET['send_num'])) {
+            $shape = $_GET['shape'];
+            $num = $_GET['x'];
+            if ($shape === 'circle') {
+                $fig = new Circle($num);
+                echo "Вы выбрали круг с радиусом " . $num . " см<br>";
+            } elseif($shape === 'square') {
+                $fig = new Square($num);
+                echo "Вы выбрали квадрат со стороной " . $num . "<br>";
+            }else{
+                echo "Выберите фигуру для нахождения площади<br>";
+            }
+        }
+        echo "площадь " . $fig->get_name() . "а равна " . $fig->find_area() . " см.";
+        ?>
+    </form>
+
 </body>
 
 </html>
